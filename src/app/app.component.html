@@ -1,24 +1,46 @@
-<h3 class="bg-primary p-1 text-white">Lista de tarefas de {{getName()}}</h3>
+<h3 class="bg-dark p-1 text-white">Lista de tarefas de {{getName()}}</h3>
+{{aa}}
 
 <div class="my-1">
-  <input class="form-control" #todoText>
+  <input class="form-control" [(ngModel)]="Item.action">
   <div class="form-check form-check-inline" >
-    <select #TodoPrioridade>
+    <select [(ngModel)]="Item.prioridade">
       <option value="baixa">Baixa</option>
       <option value="media">Media</option>
       <option value="alta">Alta</option>
     </select>
-    Insira a data limite: <input type="date" value="data" #TodoData> 
+    Insira a data limite: <input type="date" value="data" [(ngModel)]="Item.data"> 
 
   </div>
   <div>
-    <button class="btn btn-primary mt-1" (click)="addItem(todoText.value,TodoPrioridade.value,TodoData.value)"> Add </button>
+    <button class="btn btn-primary mt-1" (click)="addItem()"> Adicionar </button>
   </div>
 </div>
 
+<h5 class="bg-danger p-1 text-white">URGENTE!!</h5>
 <table class="table table-striped table-bordered">
     <thead>
-      <tr><th></th><th>Description</th><th>Done</th><th>state</th><th>date</th></tr>
+      <tr><th></th><th>Descrição</th><th>Feito?</th><th>Estado</th><th>Data</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of getItensUrgentes();let i= index" class="bg-success">
+        <td> {{i+1}}  </td>
+        <td> {{item.action}} </td>
+        <td><input type="checkbox" [(ngModel)]="item.done"></td>
+        <td [ngSwitch]="item.done">
+            <span *ngSwitchCase="true">Yes</span>
+            <span *ngSwitchDefault>No</span>
+        </td>
+        <td>{{item.data}}</td>
+        <td><button (click)="removerTarefa(item)">Deletar</button></td>
+      </tr>
+    </tbody>
+</table>
+
+<h5 class="bg-primary p-1 text-white">Para fazer</h5>
+<table class="table table-striped table-bordered">
+    <thead>
+      <tr><th></th><th>Descrição</th><th>Feito?</th><th>Estado</th><th>Data</th></tr>
     </thead>
     <tbody>
       <tr *ngFor="let item of getPriAlta();let i= index" class="bg-danger">
@@ -30,6 +52,8 @@
             <span *ngSwitchDefault>No</span>
         </td>
         <td>{{item.data}}</td>
+        <td><button (click)="removerTarefa(item)">Deletar</button></td>
+        <td><button class="btn btn-primary mt-1" (click)="editarTarefa(item)"> Editar </button></td>
       </tr>
       <tr *ngFor="let item of getPriMedia();let i= index" class="bg-warning">
           <td> {{i+1}}  </td>
@@ -40,6 +64,7 @@
               <span *ngSwitchDefault>No</span>
           </td>
           <td>{{item.data}}</td>
+          <td><button (click)="removerTarefa(item)">Deletar</button></td>
         </tr>
       <tr *ngFor="let item of getPriBaixa();let i= index" >
           <td> {{i+1}}  </td>
@@ -50,18 +75,21 @@
               <span *ngSwitchDefault>No</span>
           </td>
           <td>{{item.data}}</td>
+          <td><button (click)="removerTarefa(item)">Deletar</button></td>
         </tr>
       
     </tbody>
 </table>
 
-<h5 class="bg-primary p-1 text-white">Tarefas Feitas</h5>
+<h5 class="bg-success p-1 text-white">Tarefas Feitas</h5>
 
 <table class="table table-striped table-bordered">
   <tbody>
     <tr *ngFor="let item of getItensFeitos();let i= index">
-      <td> {{item.action}} </td>
+      <td><s> {{item.action}}  </s></td>
       <td><button type="button" class="btn btn-dark" (click)="corrigirTarefa(item)">Corrigir</button></td>
+      <td><button (click)="removerTarefa(item)">Deletar</button></td>
     </tr>
   </tbody>
 </table>
+
